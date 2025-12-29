@@ -1,0 +1,332 @@
+<div id="fragmentNewLeft">
+  <div id="leftSidebarProfileCard">
+    <div id="leftSidebarPfpContainer">
+      <img id="profilePictureImg" src="assets/imgs/pfp.JPG" alt="Profile" loading="lazy" />
+      <div class="profileStatusDots online" aria-hidden="true"></div>
+    </div>
+
+    <div id="leftSidebarProfileInfo">
+      <div id="leftSidebarNameRow">
+        <span id="leftSidebarDisplayName">Ishi</span>
+        <span id="leftSidebarPronouns">They</span>
+      </div>
+
+      <div id="leftSidebarUsername">@kikyyyyyyyyyyyyyyy</div>
+      <a id="leftSidebarProfileLink" href="#">click me</a>
+    </div>
+  </div>
+
+  <div id="leftSidebarTotalsBox">
+    <span id="leftSidebarTotalsLabel">Totals</span>
+    <div id="leftSidebarTotalsList">
+      <p class="leftSidebarTotalsListItems">Achievements: 3</p>
+      <p class="leftSidebarTotalsListItems">Play Time: 2Hrs</p>
+    </div>
+  </div>
+</div>
+
+<div id="fragmentNewNav">
+  <div id="topNavTabGroup">
+    <button class="topNavTabBtns active" data-target="profileSection">Profile</button>
+    <button class="topNavTabBtns" data-target="library">Library</button>
+    <button class="topNavTabBtns" data-target="moments">Moments</button>
+    <button class="topNavTabBtns" data-target="wishlist">Wishlist</button>
+  </div>
+</div>
+
+<div id="fragmentNewContent">
+  <section id="profileSection" class="pageTabContents active">
+    <div id="profileMainContainer">
+      <div id="profileBannerBox">
+        <img id="profileBannerImg" src="assets/imgs/pfp.JPG" alt="Banner" />
+      </div>
+
+      <div id="profileHeaderSection">
+        <div id="profilePfpWrapper">
+          <img id="profilePfpImg" src="assets/imgs/pfp.JPG" alt="Profile" />
+          <div class="profileStatusDots online" aria-hidden="true"></div>
+        </div>
+
+        <div id="profileHeaderContent">
+          <div id="profileHeaderTop">
+            <h2 id="profileFullName">Marin Kitagawa</h2>
+            <span id="profileUserHandle">@marin_shine</span>
+          </div>
+          <div id="profileStatusNote">
+            <span id="profileNoteBubble">Listening to "Electric Dreams" 🎧</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="profileBodySection">
+        <div id="aboutSection">
+          <h3>About Me</h3>
+          <p>Cosplayer, gamer, and lover of all things pastel and neon. ⚡🌸 Welcome to my digital space!</p>
+        </div>
+
+        <div id="highlightsSection">
+          <h3>Highlights</h3>
+          <div id="highlightsScroll">
+            <div class="highlightsItems">
+              <div class="highlightCircles"><img src="assets/imgs/pfp.JPG" alt="Cosplay"></div>
+              <span>Cosplay</span>
+            </div>
+            <div class="highlightsItems">
+              <div class="highlightCircles"><img src="assets/imgs/pfp.JPG" alt="Events"></div>
+              <span>Events</span>
+            </div>
+            <div class="highlightsItems">
+              <div class="highlightCircles"><img src="assets/imgs/pfp.JPG" alt="Gaming"></div>
+              <span>Gaming</span>
+            </div>
+            <div class="highlightsItems">
+              <div class="highlightCircles"><img src="assets/imgs/pfp.JPG" alt="Food"></div>
+              <span>Food</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="rotationSection">
+      <div id="rotationHeader">
+        <h2 id="rotationSectionTitle">CURRENT ROTATION</h2>
+        <div id="rotationNav">
+          <button class="rotationBtns" type="button" onclick="rotate(-1)">PREV</button>
+          <button class="rotationBtns" type="button" onclick="rotate(1)">NEXT</button>
+        </div>
+      </div>
+
+      <div id="rotationWindow" class="rotationWindow">
+        <div id="rotationRail" class="rotationRail">
+          <article class="rotationCards active">
+            <div class="cardBanner" style="background-image:url(assets/imgs/pfp.JPG)"></div>
+            <div class="cardBody">
+              <span class="genreChip">COMPETITIVE</span>
+              <h3>Elden Ring</h3>
+            </div>
+          </article>
+
+          <article class="rotationCards">
+            <div class="cardBanner" style="background-image:url(assets/imgs/pfp.JPG)"></div>
+            <div class="cardBody">
+              <span class="genreChip">VISUAL NOVEL</span>
+              <h3>Hades</h3>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div id="gamingDashboardSection" class="gamingDashboard">
+      <div id="statsGrid" class="statsGrid">
+        <div class="statsCards">
+          <span class="statsLabels">Total Playtime</span>
+          <div id="totalHours" class="statsValues">0h</div>
+        </div>
+
+        <div class="statsCards">
+          <span class="statsLabels">Daily Average</span>
+          <div id="avgHours" class="statsValues">0h</div>
+        </div>
+
+        <div class="statsCards highlight">
+          <span class="statsLabels">Peak Session</span>
+          <div id="peakHours" class="statsValues">0h</div>
+        </div>
+      </div>
+
+      <div id="graphWrapper" class="graphWrapper">
+        <div id="graphHeader" class="graphHeader">
+          <h3>Yearly Activity</h3>
+          <div class="graphLegend">
+            <span>0h</span>
+            <div class="square level1"></div>
+            <div class="square level2"></div>
+            <div class="square level3"></div>
+            <div class="square level4"></div>
+            <span>10h+</span>
+          </div>
+        </div>
+
+        <div id="sessionActivityGrid" class="sessionActivityGrid" aria-hidden="false"></div>
+      </div>
+    </div>
+
+    <div id="favoritesContainer" class="favoritesContainer">
+      <div class="favoritesHero">
+        <h1 id="heroTitle">Hall of Fame</h1>
+        <p id="heroSubtitle">A curated collection of my top-tier experiences.</p>
+      </div>
+
+      <div id="favoritesGrid" class="favoritesGrid">
+        <div class="favoritesCards vnStyle">
+          <div class="favoritesImageBoxes">
+            <img src="assets/imgs/pfp.JPG" alt="The House in Fata Morgana">
+            <div class="typeBadge">Visual Novel</div>
+          </div>
+          <div class="favoritesDetails">
+            <h4>The House in Fata Morgana</h4>
+            <p>Gothic / Psychological</p>
+          </div>
+        </div>
+
+        <div class="favoritesCards compStyle">
+          <div class="favoritesImageBoxes">
+            <img src="assets/imgs/pfp.JPG" alt="Counter-Strike 2">
+            <div class="typeBadge">Competitive</div>
+          </div>
+          <div class="favoritesDetails">
+            <h4>Counter-Strike 2</h4>
+            <p>Tactical Shooter / Global Elite</p>
+          </div>
+        </div>
+
+        <div class="favoritesCards compStyle">
+          <div class="favoritesImageBoxes">
+            <img src="assets/imgs/pfp.JPG" alt="Valorant">
+            <div class="typeBadge">Competitive</div>
+          </div>
+          <div class="favoritesDetails">
+            <h4>Valorant</h4>
+            <p>Hero Shooter / Ascendant</p>
+          </div>
+        </div>
+
+        <div class="favoritesCards vnStyle">
+          <div class="favoritesImageBoxes">
+            <img src="assets/imgs/pfp.JPG" alt="Steins;Gate">
+            <div class="typeBadge">Visual Novel</div>
+          </div>
+          <div class="favoritesDetails">
+            <h4>Steins;Gate</h4>
+            <p>Sci-Fi / Time Travel</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="library" class="pageTabContents">
+    <div id="libraryContainer" class="libraryContainer">
+      <div id="libraryHeader" class="libraryHeader">
+        <h1 id="libHeroTitle" class="heroTitle">Game Library</h1>
+        <div class="tableControls">
+          <div class="sortGroup">
+            <button class="sortBtn" data-sort="time">Sort by Time</button>
+            <button class="sortBtn" data-sort="progress">Sort by Progress</button>
+          </div>
+        </div>
+      </div>
+
+      <table id="libraryTable" class="gameTable">
+        <thead>
+          <tr><th>Game Name</th><th>Playtime</th><th>Achievements</th><th>Platform</th></tr>
+        </thead>
+        <tbody>
+          <tr data-platform="steam" data-time="240" data-progress="85">
+            <td class="gameCell" data-label="Game">
+              <img class="gameIcons" src="assets/imgs/pfp.JPG" alt="">
+              <span>Elden Ring</span>
+            </td>
+            <td data-label="Playtime">240h</td>
+            <td data-label="Progress">
+              <div class="progressBars">
+                <div class="progressBarBg">
+                  <div class="progressFills pink" style="width:85%"></div>
+                </div>
+                <span class="progressTexts">36/42</span>
+              </div>
+            </td>
+            <td data-label="Platform"><span class="platformTag steam">Steam</span></td>
+          </tr>
+
+          <tr data-platform="riot" data-time="500" data-progress="1">
+            <td class="gameCell" data-label="Game">
+              <img class="gameIcons" src="assets/imgs/pfp.JPG" alt="">
+              <span>Valo</span>
+            </td>
+            <td data-label="Playtime">500h</td>
+            <td data-label="Progress">
+              <div class="progressBars">
+                <div class="progressBarBg">
+                  <div class="progressFills pink" style="width:15%"></div>
+                </div>
+                <span class="progressTexts">1/100</span>
+              </div>
+            </td>
+            <td data-label="Platform"><span class="platformTag riot">Riot</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="moments" class="pageTabContents">
+    <div id="gallerySection" class="gallerySection">
+      <div class="favoritesHero">
+        <h1 id="momentsHeroTitle" class="heroTitle">Media Vault</h1>
+        <p id="momentsHeroSubtitle" class="heroSubtitle">Simple collection of screenshots and clips.</p>
+      </div>
+
+      <div class="simpleMediaGrid">
+        <div class="mediaItems">
+          <img src="assets/imgs/pfp.JPG" alt="Screenshot">
+          <div class="mediaLabel">Screenshot</div>
+        </div>
+
+        <div class="mediaItems">
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+          <div class="mediaLabel">YouTube Clip</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="wishlist" class="pageTabContents">
+    <div id="wishlistContainer" class="wishlistContainer">
+      <div class="favoritesHero">
+        <h1 id="wishlistHero" class="heroTitle">Wishlist</h1>
+        <p id="wishlistSubtitle" class="heroSubtitle">Games and gear I'm currently eyeing.</p>
+      </div>
+
+      <div class="wishlistGrid">
+        <div class="wishlistCards priorityMed">
+          <div class="wishImage">
+            <img src="assets/imgs/pfp.JPG" alt="GTA VI">
+            <div class="priceTag">$69.99</div>
+          </div>
+          <div class="wishInfo">
+            <h4>Grand Theft Auto VI</h4>
+            <p class="wishStatus">Release: Fall 2025</p>
+            <a class="wishLink" href="#">View on Store</a>
+          </div>
+        </div>
+
+        <div class="wishlistCards priorityMed">
+          <div class="wishImage">
+            <img src="assets/imgs/pfp.JPG" alt="RTX 5080">
+            <div class="priceTag">TBA</div>
+          </div>
+          <div class="wishInfo">
+            <h4>RTX 5080 GPU</h4>
+            <p class="wishStatus">Waiting for Benchmarks</p>
+            <a class="wishLink" href="#">View Details</a>
+          </div>
+        </div>
+
+        <div class="wishlistCards priorityMed">
+          <div class="wishImage">
+            <img src="assets/imgs/pfp.JPG" alt="Hades II">
+            <div class="priceTag">$29.99</div>
+          </div>
+          <div class="wishInfo">
+            <h4>Hades II</h4>
+            <p class="wishStatus">Waiting for Sale</p>
+            <a class="wishLink" href="#">Steam Link</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
