@@ -23,7 +23,7 @@ body {
 /* Body/layout */
 /* Prevent horizontal overflow site-wide while allowing vertical scrolling */
 body {
-  background-color: black;
+  background-color: var(--color1);
   font-family: "Segoe UI", Tahoma, sans-serif;
   color: var(--color5);
   display: flex;
@@ -172,8 +172,6 @@ body {
   grid-area: content;
   padding-left: 10px;
   padding-right: 30px;
-  padding-top: 30px;
-  padding-bottom: 30px;
   overflow-y: auto;
   line-height: 1.6;
 }
