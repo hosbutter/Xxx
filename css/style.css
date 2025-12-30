@@ -170,7 +170,7 @@ body {
 /* Content area */
 #content {
   grid-area: content;
-  padding: 30px;
+  padding: 10px;
   overflow-y: auto;
   line-height: 1.6;
 }
