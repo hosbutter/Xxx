@@ -23,7 +23,7 @@ body {
 /* Body/layout */
 /* Prevent horizontal overflow site-wide while allowing vertical scrolling */
 body {
-  background-color: var(--color1);
+  background-color: red;
   font-family: "Segoe UI", Tahoma, sans-serif;
   color: var(--color5);
   display: flex;
