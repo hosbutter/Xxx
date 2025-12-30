@@ -1,99 +1,153 @@
-const sidebarLeftContainer = document.getElementById("sidebarLeftContainer");
-const sidebarRightContainer = document.getElementById("sidebarRightContainer");
-const pageOverlay = document.getElementById("pageOverlay");
-const sidebarLeftToggleBtn = document.getElementById("sidebarLeftToggleBtn");
-const sidebarRightToggleBtn = document.getElementById("sidebarRightToggleBtn");
-const topNavBar = document.getElementById("topNavBar");
-const mainContent = document.getElementById("mainContent");
-const sidebarRightTreeLinks = document.querySelectorAll(".sidebarRightTreeLinks");
-const sidebarRightCurrentPath = document.getElementById("sidebarRightCurrentPath");
-const topLoadingBarContainer = document.getElementById("topLoadingBarContainer");
-const topLoadingBar = document.getElementById("topLoadingBar");
+// Updated script with robust slider nav binding and dynamic translate distance
 
+const sidebarLeft = document.getElementById("sidebarLeft");
+const sidebarRight = document.getElementById("sidebarRight");
+const overlay = document.getElementById("overlay");
+const leftToggle = document.getElementById("leftToggle");
+const rightToggle = document.getElementById("rightToggle");
+const navBar = document.getElementById("navBar");
+const contentArea = document.getElementById("content");
+const treeLinks = document.querySelectorAll(".treeLinks");
+const currentPath = document.getElementById("currentPath");
+const loadingBarContainer = document.getElementById("loadingBarContainer");
+const loadingBar = document.getElementById("loadingBar");
+
+// --- Slider Globals ---
 let currentIdx = 0;
 let autoSlideTimer = null;
 
-const terminalState = { neon: false, ghost: false, invert: false };
-
 function closeAll() {
-  [sidebarLeftContainer, sidebarRightContainer, pageOverlay].forEach((el) => el && el.classList.remove("active"));
-  [sidebarLeftToggleBtn, sidebarRightToggleBtn].forEach((el) => el && el.classList.remove("activeBtn"));
+  [sidebarLeft, sidebarRight, overlay].forEach(
+    (el) => el && el.classList.remove("active"),
+  );
+  [leftToggle, rightToggle].forEach(
+    (el) => el && el.classList.remove("activeBtn"),
+  );
 }
 
-sidebarLeftToggleBtn.onclick = () => {
-  const isOpen = sidebarLeftContainer.classList.contains("active");
+// --- Navigation Logic ---
+leftToggle.addEventListener("click", () => {
+  const isOpen = sidebarLeft.classList.contains("active");
   closeAll();
   if (!isOpen) {
-    sidebarLeftContainer.classList.add("active");
-    pageOverlay.classList.add("active");
+    sidebarLeft.classList.add("active");
+    overlay.classList.add("active");
+    leftToggle.classList.add("activeBtn");
   }
-};
+});
 
-sidebarRightToggleBtn.onclick = () => {
-  const isOpen = sidebarRightContainer.classList.contains("active");
+rightToggle.addEventListener("click", () => {
+  const isOpen = sidebarRight.classList.contains("active");
   closeAll();
   if (!isOpen) {
-    sidebarRightContainer.classList.add("active");
-    pageOverlay.classList.add("active");
+    sidebarRight.classList.add("active");
+    overlay.classList.add("active");
+    rightToggle.classList.add("activeBtn");
   }
-};
+});
 
-pageOverlay.onclick = closeAll;
+overlay.addEventListener("click", closeAll);
 
+// --- Rotation Slider Engine ---
+// rotate(step): step = +1 or -1 (or other integer)
 function rotate(step) {
-  const rail = document.getElementById("rotationRail");
-  const cards = document.querySelectorAll(".rotationCards");
+  const rail = document.getElementById("sliderRail");
+  const cards = document.querySelectorAll(".gameCards");
   if (!rail || cards.length === 0) return;
 
-  cards[currentIdx].classList.remove("active");
-  currentIdx = (currentIdx + step + cards.length) % cards.length;
-  cards[currentIdx].classList.add("active");
+  // Normalize previous active
+  cards[currentIdx]?.classList.remove("active");
 
-  // Calculate the exact width of a card + the gap (18px from your CSS)
-  const cardWidth = cards[0].offsetWidth + 18; 
-  rail.style.transform = `translateX(-${currentIdx * cardWidth}px)`;
+  // Update index
+  currentIdx = (currentIdx + step + cards.length) % cards.length;
+  cards[currentIdx]?.classList.add("active");
+
+  // Compute shift dynamically so it works independent of fixed px values
+  const cardEl = cards[0];
+  if (!cardEl) return;
+
+  const cardWidth = cardEl.getBoundingClientRect().width;
+  // try to read CSS gap on the rail (modern browsers support it)
+  const railStyle = window.getComputedStyle(rail);
+  const gapValue =
+    parseFloat(railStyle.gap) || parseFloat(railStyle.columnGap) || 20;
+  const shift = currentIdx * -(cardWidth + gapValue);
+
+  rail.style.transform = `translateX(${shift}px)`;
 }
 
 function initAutoRotation() {
   if (autoSlideTimer) clearInterval(autoSlideTimer);
-  const rail = document.getElementById("rotationRail");
+  const rail = document.getElementById("sliderRail");
   if (!rail) return;
+
   autoSlideTimer = setInterval(() => rotate(1), 5000);
-  const windowEl = document.getElementById("rotationWindow") || document.querySelector(".rotationWindow");
+
+  const windowEl = document.getElementById("sliderWindow");
   if (windowEl) {
-    windowEl.onmouseenter = () => clearInterval(autoSlideTimer);
-    windowEl.onmouseleave = () => initAutoRotation();
+    windowEl.addEventListener("mouseenter", () =>
+      clearInterval(autoSlideTimer),
+    );
+    windowEl.addEventListener("mouseleave", () => initAutoRotation());
+  }
+
+  // Bind previous/next nav buttons using event delegation (works if content injected dynamically)
+  // Prefer delegation so handlers remain after loadPage injects new HTML
+  // We attach a single delegated listener to the content area (or document fallback)
+  const delegateRoot = contentArea || document;
+  // Remove previous delegated handler if present by using a symbol on root
+  if (!delegateRoot.__navDelegationAdded) {
+    delegateRoot.addEventListener("click", (e) => {
+      const btn = e.target.closest && e.target.closest(".navBtns");
+      if (!btn) return;
+      const action = btn.getAttribute("data-action") || btn.dataset.action;
+      if (!action) return;
+      if (action === "prev") rotate(-1);
+      if (action === "next") rotate(1);
+    });
+    delegateRoot.__navDelegationAdded = true;
   }
 }
 
-async function initSessionActivity() {
-  const grid = document.getElementById("sessionActivityGrid");
-  if (!grid) return;
+// --- Activity/Session Graph Logic ---
+async function initSessionGraph() {
+  const graph = document.getElementById("sessionGraph");
+  if (!graph) return;
+
   try {
-    const response = await fetch("./commits.json");
+    const response = await fetch("db/sessions.json");
     if (!response.ok) throw new Error("JSON not found");
     const data = await response.json();
-    let total = 0, peak = 0, daysPlayed = 0;
-    grid.innerHTML = "";
+
+    let total = 0,
+      peak = 0,
+      daysPlayed = 0;
+    graph.innerHTML = "";
+
     for (let i = 0; i < 364; i++) {
       const square = document.createElement("div");
       square.classList.add("square");
       const day = data[i];
       const hrs = day ? parseFloat(day.hours) : 0;
+
       total += hrs;
       if (hrs > peak) peak = hrs;
       if (hrs > 0) daysPlayed++;
+
       if (hrs === 0) square.classList.add("level0");
       else if (hrs <= 2) square.classList.add("level1");
       else if (hrs <= 5) square.classList.add("level2");
       else if (hrs <= 8) square.classList.add("level3");
       else square.classList.add("level4");
+
       if (day) square.title = `${day.date}: ${hrs}h`;
-      grid.appendChild(square);
+      graph.appendChild(square);
     }
+
     const totalEl = document.getElementById("totalHours");
     const peakEl = document.getElementById("peakHours");
     const avgEl = document.getElementById("avgHours");
+
     if (totalEl) totalEl.textContent = `${total.toFixed(1)}h`;
     if (peakEl) peakEl.textContent = `${peak.toFixed(1)}h`;
     if (avgEl) avgEl.textContent = `${(total / (daysPlayed || 1)).toFixed(1)}h`;
@@ -103,157 +157,157 @@ async function initSessionActivity() {
 }
 
 function initLibraryFilters() {
-  const table = document.getElementById("libraryTable");
+  const table =
+    document.getElementById("gameLibraryTable") ||
+    document.getElementById("game-library-table") ||
+    document.querySelector("#game-library-table");
   if (!table) return;
+
   const tbody = table.querySelector("tbody");
   const rows = Array.from(tbody.querySelectorAll("tr"));
+  const platformFilter = document.getElementById("platformFilter");
   const sortBtns = document.querySelectorAll(".sortBtn");
+
+  if (platformFilter) {
+    platformFilter.onchange = (e) => {
+      const val = e.target.value;
+      rows.forEach((row) => {
+        const platform = row.getAttribute("data-platform");
+        row.style.display = val === "all" || platform === val ? "" : "none";
+      });
+    };
+  }
+
   const sortTable = (type, btn) => {
     sortBtns.forEach((b) => b.classList.remove("active"));
     if (btn) btn.classList.add("active");
+
     const sortedRows = rows.sort((a, b) => {
       const valA = parseFloat(a.getAttribute(`data-${type}`)) || 0;
       const valB = parseFloat(b.getAttribute(`data-${type}`)) || 0;
-      return valB - valA;
+      return valB - valA; // Descending
     });
+
     sortedRows.forEach((row) => tbody.appendChild(row));
   };
-  sortBtns.forEach((btn) => { btn.onclick = () => sortTable(btn.getAttribute("data-sort"), btn); });
+
+  sortBtns.forEach((btn) => {
+    btn.onclick = () => sortTable(btn.getAttribute("data-sort"), btn);
+  });
+
   const defaultSortBtn = document.querySelector('.sortBtn[data-sort="time"]');
-  if (defaultSortBtn) sortTable("time", defaultSortBtn);
+  if (defaultSortBtn) {
+    sortTable("time", defaultSortBtn);
+  }
 }
 
+// --- Tab Logic (with LocalStorage) ---
 function initInternalTabs() {
-  const tabs = document.querySelectorAll(".topNavTabBtns");
-  const contents = document.querySelectorAll(".pageTabContents");
+  const tabs = document.querySelectorAll(".tabBtns");
+  const contents = document.querySelectorAll(".tabContents");
   const pageName = window.location.hash.substring(1) || "ishini";
   const storageKey = `activeTab_${pageName}`;
+
   const savedTabId = localStorage.getItem(storageKey);
+
   if (savedTabId) {
     const targetTab = document.querySelector(`[data-target="${savedTabId}"]`);
     const targetContent = document.getElementById(savedTabId);
+
     if (targetTab && targetContent) {
       tabs.forEach((t) => t.classList.remove("active"));
       contents.forEach((c) => c.classList.remove("active"));
+
       targetTab.classList.add("active");
       targetContent.classList.add("active");
-      if (sidebarRightCurrentPath) sidebarRightCurrentPath.textContent = `/root/${pageName}/${savedTabId}`;
+
+      if (currentPath)
+        currentPath.textContent = `/root/${pageName}/${savedTabId}`;
     }
   }
+
   tabs.forEach((tab) => {
-    tab.onclick = () => {
+    tab.addEventListener("click", () => {
       const target = tab.getAttribute("data-target");
+
       tabs.forEach((t) => t.classList.remove("active"));
       contents.forEach((c) => c.classList.remove("active"));
       tab.classList.add("active");
       document.getElementById(target)?.classList.add("active");
+
       localStorage.setItem(storageKey, target);
-      if (sidebarRightCurrentPath) sidebarRightCurrentPath.textContent = `/root/${pageName}/${target}`;
+
+      if (currentPath) currentPath.textContent = `/root/${pageName}/${target}`;
+
       initAutoRotation();
-      initSessionActivity();
+      initSessionGraph();
       initLibraryFilters();
-    };
+    });
   });
 }
 
-function initTerminal() {
-  const input = document.getElementById("sidebarRightTerminalInput");
-  const output = document.getElementById("sidebarRightTerminalOutput");
-  if (!input || !output) return;
-  input.onkeydown = (e) => {
-    if (e.key === "Enter") {
-      const cmd = input.value.toLowerCase().trim();
-      if (!cmd) return;
-      const line = document.createElement("div");
-      line.innerHTML = `<span style="color:var(--accent)">></span> ${cmd}`;
-      output.appendChild(line);
-      executeCommand(cmd, output);
-      input.value = "";
-      output.scrollTop = output.scrollHeight;
-    }
-  };
-}
-
-function executeCommand(cmd, output) {
-  const resp = document.createElement("div");
-  resp.style.color = "#00f5ff";
-  resp.style.fontSize = "0.7rem";
-  resp.style.marginBottom = "8px";
-  switch (cmd) {
-    case "help":
-      resp.textContent = "Available: neon, ghost, invert, shake, clear, reset";
-      break;
-    case "neon":
-      terminalState.neon = !terminalState.neon;
-      document.querySelectorAll(".favoritesCards, .wishlistCards, .statsCards, .mediaItems").forEach((c) => {
-        c.style.boxShadow = terminalState.neon ? "0 0 20px #ff3399" : "";
-        c.style.borderColor = terminalState.neon ? "#ff3399" : "";
-      });
-      resp.textContent = terminalState.neon ? "Neon Overdrive: ON" : "Neon Overdrive: OFF";
-      break;
-    case "ghost":
-      terminalState.ghost = !terminalState.ghost;
-      document.body.style.opacity = terminalState.ghost ? "0.5" : "1";
-      resp.textContent = terminalState.ghost ? "Stealth Mode: ON" : "Stealth Mode: OFF";
-      break;
-    case "invert":
-      terminalState.invert = !terminalState.invert;
-      document.documentElement.style.filter = terminalState.invert ? "invert(1)" : "invert(0)";
-      resp.textContent = terminalState.invert ? "Colors: INVERTED" : "Colors: NORMAL";
-      break;
-    case "shake":
-      document.body.style.animation = "none";
-      setTimeout(() => { document.body.style.animation = "shake 0.5s ease"; }, 10);
-      resp.textContent = "Impact triggered.";
-      break;
-    case "clear":
-      output.innerHTML = "";
-      return;
-    case "reset":
-      terminalState.neon = false; terminalState.ghost = false; terminalState.invert = false;
-      document.body.style.opacity = "1"; document.documentElement.style.filter = "none"; document.body.style.animation = "none";
-      document.querySelectorAll(".favoritesCards, .wishlistCards, .statsCards, .mediaItems").forEach((c) => { c.style.boxShadow = ""; c.style.borderColor = ""; });
-      resp.textContent = "System restored to default. (｡•̀ᴗ-)✧";
-      break;
-    default:
-      resp.style.color = "#ff4444";
-      resp.textContent = `Unknown command: ${cmd}`;
-  }
-  output.appendChild(resp);
-}
-
+// --- Page Loading Logic ---
 async function loadPage(pageName, linkElement) {
   try {
-    topLoadingBarContainer.style.display = "block";
-    topLoadingBar.style.width = "40%";
+    loadingBarContainer.style.display = "block";
+    loadingBar.style.width = "40%";
+
     const response = await fetch(`pages/${pageName}.html`);
     if (!response.ok) throw new Error();
     const rawHTML = await response.text();
     const doc = new DOMParser().parseFromString(rawHTML, "text/html");
-    if (sidebarLeftContainer) sidebarLeftContainer.innerHTML = doc.getElementById("fragmentNewLeft")?.innerHTML || "";
-    if (topNavBar) topNavBar.innerHTML = doc.getElementById("fragmentNewNav")?.innerHTML || "";
-    if (mainContent) mainContent.innerHTML = doc.getElementById("fragmentNewContent")?.innerHTML || "";
+
+    if (sidebarLeft)
+      sidebarLeft.innerHTML =
+        doc.getElementById("newLeft")?.innerHTML ||
+        doc.getElementById("new-left")?.innerHTML ||
+        "";
+    if (navBar)
+      navBar.innerHTML =
+        doc.getElementById("newNav")?.innerHTML ||
+        doc.getElementById("new-nav")?.innerHTML ||
+        "";
+    if (contentArea)
+      contentArea.innerHTML =
+        doc.getElementById("newContent")?.innerHTML ||
+        doc.getElementById("new-content")?.innerHTML ||
+        "";
+
     window.location.hash = pageName;
+
     initPageSpecificScripts();
     currentIdx = 0;
-    topLoadingBar.style.width = "100%";
-    setTimeout(() => { topLoadingBarContainer.style.display = "none"; topLoadingBar.style.width = "0%"; }, 400);
-    sidebarRightTreeLinks.forEach((l) => l.classList.remove("active"));
-    const activeLink = linkElement || document.querySelector(`[data-section="${pageName}"]`);
+
+    // reset rail translation (helpful if previous page left a transform)
+    const rail = document.getElementById("sliderRail");
+    if (rail) rail.style.transform = "translateX(0)";
+
+    loadingBar.style.width = "100%";
+    setTimeout(() => {
+      loadingBarContainer.style.display = "none";
+      loadingBar.style.width = "0%";
+    }, 400);
+
+    treeLinks.forEach((l) => l.classList.remove("active"));
+    const activeLink =
+      linkElement || document.querySelector(`[data-page="${pageName}"]`);
     if (activeLink) activeLink.classList.add("active");
-    if (sidebarRightCurrentPath) sidebarRightCurrentPath.textContent = `/root/${pageName}`;
+
+    if (currentPath) currentPath.textContent = `/root/${pageName}`;
     if (window.innerWidth <= 850) closeAll();
   } catch (err) {
-    topLoadingBarContainer.style.display = "none";
-    if (mainContent) mainContent.innerHTML = `<h2>Error</h2><p>Page could not be loaded.</p>`;
+    loadingBarContainer.style.display = "none";
+    if (contentArea)
+      contentArea.innerHTML = `<h2>Error</h2><p>Page could not be loaded.</p>`;
   }
 }
 
-sidebarRightTreeLinks.forEach((link) => {
-  link.onclick = (e) => {
+// --- Event Listeners ---
+treeLinks.forEach((link) => {
+  link.addEventListener("click", (e) => {
     e.preventDefault();
-    loadPage(link.getAttribute("data-section"), link);
-  };
+    loadPage(link.getAttribute("data-page"), link);
+  });
 });
 
 window.addEventListener("hashchange", () => {
@@ -266,10 +320,120 @@ window.addEventListener("DOMContentLoaded", () => {
   loadPage(hash || "ishini", null);
 });
 
+function initTerminal() {
+  const input = document.getElementById("terminalInput");
+  const output = document.getElementById("terminalBody");
+  if (!input || !output) return;
+
+  input.onkeydown = (e) => {
+    if (e.key === "Enter") {
+      const cmd = input.value.toLowerCase().trim();
+      if (!cmd) return;
+
+      const line = document.createElement("div");
+      line.className = "terminalLines";
+      line.innerHTML = `<span style="color:var(--accent)">></span> ${cmd}`;
+      output.appendChild(line);
+
+      executeCommand(cmd, output);
+
+      input.value = "";
+      output.scrollTop = output.scrollHeight;
+    }
+  };
+}
+
+const terminalState = {
+  neon: false,
+  ghost: false,
+  invert: false,
+};
+
+function executeCommand(cmd, output) {
+  const resp = document.createElement("div");
+  resp.style.color = "#00f5ff";
+  resp.style.fontSize = "0.7rem";
+  resp.style.marginBottom = "8px";
+
+  switch (cmd) {
+    case "help":
+      resp.textContent = "Available: neon, ghost, invert, shake, clear, reset";
+      break;
+
+    case "neon":
+      terminalState.neon = !terminalState.neon;
+      const cards = document.querySelectorAll(
+        ".favCards, .wishCards, .statCards, .mediaItems",
+      );
+      cards.forEach((c) => {
+        c.style.boxShadow = terminalState.neon ? "0 0 20px #ff3399" : "";
+        c.style.borderColor = terminalState.neon ? "#ff3399" : "";
+      });
+      resp.textContent = terminalState.neon
+        ? "Neon Overdrive: ON"
+        : "Neon Overdrive: OFF";
+      break;
+
+    case "ghost":
+      terminalState.ghost = !terminalState.ghost;
+      document.body.style.opacity = terminalState.ghost ? "0.5" : "1";
+      resp.textContent = terminalState.ghost
+        ? "Stealth Mode: ON"
+        : "Stealth Mode: OFF";
+      break;
+
+    case "invert":
+      terminalState.invert = !terminalState.invert;
+      document.documentElement.style.filter = terminalState.invert
+        ? "invert(1)"
+        : "invert(0)";
+      resp.textContent = terminalState.invert
+        ? "Colors: INVERTED"
+        : "Colors: NORMAL";
+      break;
+
+    case "shake":
+      document.body.style.animation = "none";
+      setTimeout(() => {
+        document.body.style.animation = "shake 0.5s ease";
+      }, 10);
+      resp.textContent = "Impact triggered.";
+      break;
+
+    case "clear":
+      output.innerHTML = "";
+      return;
+
+    case "reset":
+      terminalState.neon = false;
+      terminalState.ghost = false;
+      terminalState.invert = false;
+
+      document.body.style.opacity = "1";
+      document.documentElement.style.filter = "none";
+      document.body.style.animation = "none";
+      const allCards = document.querySelectorAll(
+        ".favCards, .wishCards, .statCards, .mediaItems",
+      );
+      allCards.forEach((c) => {
+        c.style.boxShadow = "";
+        c.style.borderColor = "";
+      });
+
+      resp.textContent = "System restored to default. (｡•̀ᴗ-)✧";
+      break;
+
+    default:
+      resp.style.color = "#ff4444";
+      resp.textContent = `Unknown command: ${cmd}`;
+  }
+  output.appendChild(resp);
+}
+// --- Controller for Page-Specific Scripts ---
 function initPageSpecificScripts() {
   initInternalTabs();
   initAutoRotation();
-  initSessionActivity();
+  initSessionGraph();
   initLibraryFilters();
   initTerminal();
 }
