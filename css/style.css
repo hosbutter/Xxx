@@ -392,10 +392,9 @@ body {
 }
 
 /* Rotation / slider */
-.rotationSection {
-  margin-top: 30px;
+/* .rotationSection {
   margin-bottom: 30px;
-}
+} */
 .rotationHeader {
   display: flex;
   justify-content: space-between;
@@ -468,7 +467,6 @@ body {
 .profileContainer {
   animation: fadeIn 0.5s ease;
   color: var(--color5);
-  margin-bottom: 100px;
 }
 .profileBanner {
   width: 100%;
@@ -605,7 +603,7 @@ body {
 }
 
 #favoritesContainer {
-  padding: 30px;
+  padding: 5px 30px 30px 30px;
   animation: fadeIn 0.6s ease-out;
 }
 .favoritesHeroes {
@@ -677,7 +675,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 30px;
-  padding: 20px;
+  padding: 20px 20px 10px 20px;
+  padding-top: 10px;
   background: rgba(255, 255, 255, 0.4);
   backdrop-filter: blur(10px);
   border-radius: 24px;
