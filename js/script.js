@@ -44,10 +44,14 @@ function rotate(step) {
   const rail = document.getElementById("rotationRail");
   const cards = document.querySelectorAll(".rotationCards");
   if (!rail || cards.length === 0) return;
+
   cards[currentIdx].classList.remove("active");
   currentIdx = (currentIdx + step + cards.length) % cards.length;
   cards[currentIdx].classList.add("active");
-  rail.style.transform = `translateX(${currentIdx * -300}px)`;
+
+  // Calculate the exact width of a card + the gap (18px from your CSS)
+  const cardWidth = cards[0].offsetWidth + 18; 
+  rail.style.transform = `translateX(-${currentIdx * cardWidth}px)`;
 }
 
 function initAutoRotation() {
