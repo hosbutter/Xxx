@@ -1,4 +1,4 @@
-// Updated script with robust slider nav binding and dynamic translate distance
+// Updated script with robust slider nav binding and dynamic translate distance 
 
 const sidebarLeft = document.getElementById("sidebarLeft");
 const sidebarRight = document.getElementById("sidebarRight");
