@@ -149,6 +149,7 @@ body {
   background: var(--color4);
   display: flex;
   align-items: center;
+  justify-content: center; /* Horizontal centering */
   padding: 0 20px;
   font-weight: bold;
 }
@@ -175,6 +176,12 @@ body {
   background: var(--accent);
   color: white;
 }
+/* If .active is INSIDE .tabBtns */
+.tabBtns .active .hero-15 {
+  color: white !important;
+}
+
+/* If the button ITSELF has both classes */
 .tabBtns.active .hero-15 {
   color: white !important;
 }
