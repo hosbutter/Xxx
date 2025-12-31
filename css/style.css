@@ -176,7 +176,7 @@ body {
   color: white;
 }
 .tab-btn.active .hero-15 {
-  color: white;
+  color: white !important;
 }
 
 /* Focus */
