@@ -39,7 +39,7 @@ body {
 /* Main container: use max-height to avoid forcing a page scrollbar */
 #mainBox {
   display: grid;
-  width: 90vw;
+  width: 95vw;
   max-width: 1100px;
   max-height: calc(100vh - 40px); /* avoid overflowing the viewport */
   height: auto;
@@ -48,11 +48,11 @@ body {
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   grid-template-columns: 240px 1fr 240px;
-  grid-template-rows: 60px 1fr 50px;
+  grid-template-rows: 60px 1fr;
   grid-template-areas:
     "leftSb nav rightSb"
     "leftSb content rightSb"
-    "leftSb footer rightSb";
+    "leftSb content rightSb";
 }
 
 /* Floating toggles
@@ -171,7 +171,8 @@ body {
 #content {
   grid-area: content;
   padding-left: 10px;
-  padding-right: 15px;
+  padding-right: 30px;
+  padding-top: 10px;
   overflow-y: auto;
   line-height: 1.6;
 }
