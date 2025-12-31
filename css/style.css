@@ -55,6 +55,22 @@ body {
     "leftSb content rightSb";
 }
 
+.hero-15 {
+    /* Precise 15px dimensions */
+    width: 15px;
+    height: 15px;
+    
+    /* Pure black color */
+    color: #000000;
+    
+    /* Layout properties for alignment with text */
+    display: inline-block;
+    vertical-align: middle;
+    
+    /* Keeps lines crisp at small sizes */
+    shape-rendering: geometricPrecision;
+  }
+
 /* Floating toggles
    - Hidden by default on desktop
    - Visible (inline-flex) only inside the mobile media query below
