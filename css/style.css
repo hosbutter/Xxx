@@ -173,7 +173,7 @@ body {
 }
 .tabBtns.active {
   background: var(--accent);
-  color: white;
+  color: white !important;
 }
 
 /* Focus */
