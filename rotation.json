@@ -1,0 +1,14 @@
+[
+  {
+    "link": "steam.com",
+    "img": "assets/imgs/pfp.JPG",
+    "name": "Hades",
+    "genre": 1
+  },
+  {
+    "link": "steam.com",
+    "img": "assets/imgs/pfp.JPG",
+    "name": "Elden Ring",
+    "genre": 2
+  }
+]

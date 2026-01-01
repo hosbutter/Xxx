@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "method": 1,
+    "link": "steam.com",
+    "img": "assets/imgs/pfp.JPG",
+    "name": "Elden Ring",
+    "playtime": 142,
+    "achievements": {
+      "earned": 38,
+      "total": 42
+    }
+  },
+  {
+    "id": 1,
+    "method": 1,
+    "link": "steam.com",
+    "img": "assets/imgs/pfp.JPG",
+    "name": "Stardew Valley",
+    "playtime": 85,
+    "achievements": {
+      "earned": 25,
+      "total": 49
+    }
+  },
+  {
+    "id": 1,
+    "method": 1,
+    "link": "steam.com",
+    "img": "assets/imgs/pfp.JPG",
+    "name": "Cyberpunk 2077",
+    "playtime": 62,
+    "achievements": {
+      "earned": 45,
+      "total": 45
+    }
+  }
+]
